@@ -19,4 +19,6 @@ public interface FileExplorer {
     String deleteFile(String name);
     
     String createFile(String name);
+    
+    String fileWrite(String name);
 }

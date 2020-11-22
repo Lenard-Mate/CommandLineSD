@@ -1,13 +1,19 @@
 package fileexplorer;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,18 +88,46 @@ public class FileExplorerImpl implements FileExplorer {
             File myObj = new File(name);
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
-                text="File created: " + myObj.getName();
+                text = "File created: " + myObj.getName();
             } else {
                 System.out.println("File already exists.");
-                text="File already exists.";
+                text = "File already exists.";
             }
         } catch (IOException e) {
             System.out.println("An error occurred.");
-            text="An error occurred.";
+            text = "An error occurred.";
             e.printStackTrace();
         }
 
         return text;
     }
 
+    @Override
+    public String fileWrite(String name) {
+        String text = "";
+        BufferedReader newText = new BufferedReader(new InputStreamReader(System.in));
+        String context = null;
+        try {
+            context = newText.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(FileExplorerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        File file = new File(name);
+        FileWriter fr = null;
+        try {
+            fr = new FileWriter(file);
+            fr.write(context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //close resources
+            try {
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return text;
+        }
+    }
 }

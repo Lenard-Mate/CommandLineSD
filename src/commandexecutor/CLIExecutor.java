@@ -46,7 +46,10 @@ public final class CLIExecutor extends UnicastRemoteObject implements RMICommand
                     return fileExplorer.deleteFile(matcher.group(3));
                 case "touch":
                     System.err.println("Selected touch");
-                    return fileExplorer.createFile(matcher.group(3));    
+                    return fileExplorer.createFile(matcher.group(3));
+                case "sh":
+                    System.err.println("Selected sh");
+                    return fileExplorer.fileWrite(matcher.group(3));    
                 default:
                     return "The command does not exist";
             }
