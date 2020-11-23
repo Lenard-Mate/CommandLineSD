@@ -35,6 +35,14 @@ public class RMIClient {
             System.out.println(c.execute(name));
 
         }
-
+        
+        
+        
     }
+    public String textToWrite() throws IOException{
+        
+        BufferedReader newText = new BufferedReader(new InputStreamReader(System.in));
+        
+        return newText.readLine();
+        }
 }

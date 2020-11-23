@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -103,22 +104,58 @@ public class FileExplorerImpl implements FileExplorer {
     }
 
     @Override
-    public String fileWrite(String name) {
+    public String fileWrite(String name, String message) {
         String text = "";
-        BufferedReader newText = new BufferedReader(new InputStreamReader(System.in));
-        String context = null;
+
+//        String context = null;
+//        context = message;
+//        File file = new File(name);
+//        FileWriter fr = null;
+//        try {
+//            fr = new FileWriter(file);
+//            fr.write(context);
+//            text = "Text was added succsessfully to the file";
+//        } catch (IOException e) {
+//             text="File doesn't exist!";
+//            e.printStackTrace();
+//           
+//        } finally {
+//            //close resources
+//            try {
+//                fr.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return text;
+//        }
         try {
-            context = newText.readLine();
-        } catch (IOException ex) {
-            Logger.getLogger(FileExplorerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Files.write(Paths.get(name), message.getBytes(), StandardOpenOption.APPEND);
+            text = "Text was added succsessfully to the file";
+        } catch (IOException e) {
+            //exception handling left as an exercise for the reader
+            text = "File doesn't exist!";
         }
+        return text;
+    }
+    
+    
+    @Override
+    public String fileCreateWrite(String name, String message) {
+        String text = "";
+
+        String context = null;
+        context = message;
         File file = new File(name);
         FileWriter fr = null;
         try {
             fr = new FileWriter(file);
             fr.write(context);
+            text = "Text was added succsessfully to the file";
         } catch (IOException e) {
+             text="File doesn't exist!";
             e.printStackTrace();
+           
         } finally {
             //close resources
             try {
@@ -129,5 +166,7 @@ public class FileExplorerImpl implements FileExplorer {
 
             return text;
         }
+      
     }
+    
 }

@@ -20,5 +20,7 @@ public interface FileExplorer {
     
     String createFile(String name);
     
-    String fileWrite(String name);
+    String fileWrite(String name,String message);
+    
+    String fileCreateWrite(String name,String message);
 }

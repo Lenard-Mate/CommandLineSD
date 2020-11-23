@@ -35,7 +35,7 @@ public final class CLIExecutor extends UnicastRemoteObject implements RMICommand
             String cmd = matcher.group(1);
             System.err.println(cmd);
             switch (cmd) {
-                case "cat":
+                case "read":
                     System.err.println("Selected cat");
                     return fileExplorer.readFileContent(matcher.group(3));
                 case "ls":
@@ -47,17 +47,50 @@ public final class CLIExecutor extends UnicastRemoteObject implements RMICommand
                 case "touch":
                     System.err.println("Selected touch");
                     return fileExplorer.createFile(matcher.group(3));
-                case "sh":
+                case "append":
                     System.err.println("Selected sh");
-                    return fileExplorer.fileWrite(matcher.group(3));    
+                    return processAppend(matcher.group(3));
+                case "toucha":
+                    System.err.println("Selected toucha");
+                    return processAppendAndC(matcher.group(3));    
                 default:
                     return "The command does not exist";
             }
         }
 
-      
         return "Invalid input!";
 
+    }
+
+    private String processAppend(String appendParams) {
+        String command;
+        String text;
+        Matcher matcher = REGEX.matcher(appendParams);
+
+        if (matcher.matches()) {
+            
+            
+            return fileExplorer.fileWrite(matcher.group(1), matcher.group(3));
+            
+        }
+
+        return "The command can't be executed";
+    }
+    
+    
+    private String processAppendAndC(String appendParams) {
+        String command;
+        String text;
+        Matcher matcher = REGEX.matcher(appendParams);
+
+        if (matcher.matches()) {
+            
+            
+            return fileExplorer.fileCreateWrite(matcher.group(1), matcher.group(3));
+            
+        }
+
+        return "The command can't be executed";
     }
 
 }
