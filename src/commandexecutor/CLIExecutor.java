@@ -33,26 +33,19 @@ public final class CLIExecutor extends UnicastRemoteObject implements RMICommand
         if (matcher.matches()) {
 
             String cmd = matcher.group(1);
-            System.err.println(cmd);
             switch (cmd) {
                 case "read":
-                    System.err.println("Selected cat");
-                    return fileExplorer.readFileContent(matcher.group(3));
+                    return handleRead(matcher.group(3));
                 case "ls":
-                    System.err.println("Selected ls");
                     return fileExplorer.listAllFiles();
                 case "rm":
-                    System.err.println("Selected rm");
-                    return fileExplorer.deleteFile(matcher.group(3));
+                    return handleRemove(matcher.group(3));
                 case "touch":
-                    System.err.println("Selected touch");
-                    return fileExplorer.createFile(matcher.group(3));
+                    return handleTouch(matcher.group(3));
                 case "append":
-                    System.err.println("Selected sh");
                     return processAppend(matcher.group(3));
                 case "toucha":
-                    System.err.println("Selected toucha");
-                    return processAppendAndC(matcher.group(3));    
+                    return processCreateAndAppend(matcher.group(3));
                 default:
                     return "The command does not exist";
             }
@@ -62,35 +55,70 @@ public final class CLIExecutor extends UnicastRemoteObject implements RMICommand
 
     }
 
+    private String handleRemove(String fileName) {
+
+        if (isNullOrEmpty(fileName)) {
+            return String.format("Error in %s", fileName);
+        }
+        return fileExplorer.deleteFile(fileName);
+    }
+
+    private String handleRead(String fileName) {
+
+        if (isNullOrEmpty(fileName)) {
+            return String.format("Error in %s", fileName);
+        }
+        return fileExplorer.readFileContent(fileName);
+    }
+
+    private String handleTouch(String fileName) {
+
+        if (isNullOrEmpty(fileName)) {
+            return String.format("Error in %s", fileName);
+        }
+
+        return fileExplorer.createFile(fileName);
+    }
+
     private String processAppend(String appendParams) {
-        String command;
-        String text;
+
+        if (isNullOrEmpty(appendParams)) {
+            return String.format("Error in %s", appendParams);
+        }
+
         Matcher matcher = REGEX.matcher(appendParams);
 
         if (matcher.matches()) {
-            
-            
-            return fileExplorer.fileWrite(matcher.group(1), matcher.group(3));
-            
+            String argument = matcher.group(3);
+            if (isNullOrEmpty(argument)) {
+
+                return "Incomplete params";
+            }
+            return fileExplorer.writeToFile(matcher.group(1), argument);
+
+        }
+        return "The command can't be executed";
+    }
+
+    private String processCreateAndAppend(String appendParams) {
+        Matcher matcher = REGEX.matcher(appendParams);
+
+        if (matcher.matches()) {
+            String argument = matcher.group(3);
+
+            if (isNullOrEmpty(argument)) {
+
+                return "Incomplete params";
+            }
+
+            return fileExplorer.createAndWriteToFile(matcher.group(1), argument);
         }
 
         return "The command can't be executed";
     }
-    
-    
-    private String processAppendAndC(String appendParams) {
-        String command;
-        String text;
-        Matcher matcher = REGEX.matcher(appendParams);
 
-        if (matcher.matches()) {
-            
-            
-            return fileExplorer.fileCreateWrite(matcher.group(1), matcher.group(3));
-            
-        }
-
-        return "The command can't be executed";
+    private boolean isNullOrEmpty(String fileName) {
+        return fileName == null || fileName.isEmpty();
     }
 
 }

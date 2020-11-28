@@ -1,172 +1,105 @@
 package fileexplorer;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FileExplorerImpl implements FileExplorer {
 
+    private static final String NEW_LINE = System.lineSeparator();
+
     @Override
     public String readFileContent(String name) {
-        String text = "";
 
-        try {
-            System.err.println(name);
-            File myObj = new File(name);
-            try (Scanner myReader = new Scanner(myObj)) {
-                while (myReader.hasNextLine()) {
-                    String data = myReader.nextLine();
+        StringBuilder strinBuilder = new StringBuilder();
 
-                    text = text + data + "\n";
-                }
+        File myObj = new File(name);
+        try (Scanner myReader = new Scanner(myObj)) {
+            while (myReader.hasNextLine()) {
+                strinBuilder.append(myReader.nextLine()).append(NEW_LINE);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("That file doesn't exist.");
-            return "That file doesn't exist.";
-            //e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return String.format("File %s does not exist", name);
         }
-
-        return text;
+        return strinBuilder.toString();
     }
 
     @Override
     public String listAllFiles() {
-        String text = "";
 
+        StringBuilder sb = new StringBuilder();
         try (Stream<Path> paths = Files.list(Paths.get(""))) {
 
-            StringBuilder sb = new StringBuilder();
-
             paths.filter(Files::isRegularFile)
-                    .map(x -> x.toString())
-                    .forEach(s -> sb.append(s).append('\n'));
-
-            text = sb.toString();
+                    .map(f -> f.getName(0))
+                    .forEach(s -> sb.append(s).append(NEW_LINE));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return text;
+        return sb.toString();
     }
 
     @Override
     public String deleteFile(String name) {
-        String text = "";
 
-        File file = new File(name);
-
-        if (file.delete()) {
-            text = "File deleted successfully";
-            System.out.println("File deleted successfully");
-        } else {
-            text = "File doesn't exist. ";
-            System.out.println("File doesn't exist. ");
+        if (new File(name).delete()) {
+            return String.format("File %s was deleted!", name);
         }
-
-        return text;
+        return String.format("File %s was not deleted!", name);
     }
 
     @Override
     public String createFile(String name) {
-        String text = "";
 
         try {
             File myObj = new File(name);
             if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
-                text = "File created: " + myObj.getName();
+                return String.format("File %s created!", name);
             } else {
-                System.out.println("File already exists.");
-                text = "File already exists.";
+                return String.format("File %s alredy exists!", name);
             }
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            text = "An error occurred.";
+
             e.printStackTrace();
+            return String.format("Unknow error occured while creating file %s!", name);
         }
 
-        return text;
     }
 
     @Override
-    public String fileWrite(String name, String message) {
-        String text = "";
+    public String writeToFile(String name, String message) {
 
-//        String context = null;
-//        context = message;
-//        File file = new File(name);
-//        FileWriter fr = null;
-//        try {
-//            fr = new FileWriter(file);
-//            fr.write(context);
-//            text = "Text was added succsessfully to the file";
-//        } catch (IOException e) {
-//             text="File doesn't exist!";
-//            e.printStackTrace();
-//           
-//        } finally {
-//            //close resources
-//            try {
-//                fr.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return text;
-//        }
         try {
             Files.write(Paths.get(name), message.getBytes(), StandardOpenOption.APPEND);
-            text = "Text was added succsessfully to the file";
+            return String.format("Text was succsessfully added to %s", name);
         } catch (IOException e) {
             //exception handling left as an exercise for the reader
-            text = "File doesn't exist!";
+            return String.format("File %s doesn't exist!", name);
         }
-        return text;
+
     }
-    
-    
+
     @Override
-    public String fileCreateWrite(String name, String message) {
-        String text = "";
+    public String createAndWriteToFile(String name, String message) {
 
-        String context = null;
-        context = message;
         File file = new File(name);
-        FileWriter fr = null;
-        try {
-            fr = new FileWriter(file);
-            fr.write(context);
-            text = "Text was added succsessfully to the file";
-        } catch (IOException e) {
-             text="File doesn't exist!";
-            e.printStackTrace();
-           
-        } finally {
-            //close resources
-            try {
-                fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return text;
+        try (FileWriter fr = new FileWriter(file)) {
+            fr.write(message);
+            return String.format("Text was added successfully to %s", name);
+        } catch (IOException ex) {
+           ex.printStackTrace();
+           return String.format("%s doesn't exists!", name);
         }
-      
+
     }
-    
+
 }

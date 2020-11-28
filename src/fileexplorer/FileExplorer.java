@@ -8,10 +8,6 @@ package fileexplorer;
  */
 public interface FileExplorer {
 
-    /**
-     * 
-     * @return 
-     */ 
     String readFileContent(String name);
     
     String listAllFiles();
@@ -20,7 +16,7 @@ public interface FileExplorer {
     
     String createFile(String name);
     
-    String fileWrite(String name,String message);
+    String writeToFile(String name,String message);
     
-    String fileCreateWrite(String name,String message);
+    String createAndWriteToFile(String name,String message);
 }
