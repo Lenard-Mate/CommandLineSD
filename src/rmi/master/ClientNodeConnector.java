@@ -30,54 +30,6 @@ public class ClientNodeConnector extends UnicastRemoteObject implements RMIClien
     }
 
     @Override
-    public String selectNode(String name) throws RemoteException {
-
-        if (name.equals("node")) {
-            return "node";
-        }
-
-        if (name.equals("node2")) {
-            return "node2";
-        }
-        return "Node " + name + " not exist!";
-    }
-
-    @Override
-    public String forwardCommand(String command) throws RemoteException {
-        String rmiName = "rmi://localhost:9000/fileExplorer";
-
-        System.out.println("Connecting to: " + rmiName);
-        RMICommandExecutor c = null;
-        try {
-            c = (RMICommandExecutor) Naming.lookup(rmiName);
-        } catch (NotBoundException ex) {
-            Logger.getLogger(ClientNodeConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(ClientNodeConnector.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return c.execute(command);
-    }
-
-    @Override
-    public String forwardCommandNod2(String command) throws RemoteException {
-        String rmiName = "rmi://localhost:9001/fileExplorer";
-
-        System.out.println("Connecting to: " + rmiName);
-        RMICommandExecutor c = null;
-        try {
-            c = (RMICommandExecutor) Naming.lookup(rmiName);
-
-        } catch (NotBoundException ex) {
-            Logger.getLogger(ClientNodeConnector.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(ClientNodeConnector.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return c.execute(command);
-    }
-
-    @Override
     public String forwardCommand(int nodeNr, String command) throws RemoteException {
 
         String rmiName = this.address.get(nodeNr);
@@ -86,7 +38,6 @@ public class ClientNodeConnector extends UnicastRemoteObject implements RMIClien
         try {
             c = (RMICommandExecutor) Naming.lookup(rmiName);
             String result = c.execute(command);
-//            Naming.unbind(rmiName);
             return result;
 
         } catch (NotBoundException ex) {

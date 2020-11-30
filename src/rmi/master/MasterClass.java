@@ -33,29 +33,5 @@ public class MasterClass {
             e.printStackTrace();
         }
 
-//        try {
-//            Registry registry = LocateRegistry.createRegistry(1099);
-//            RMICommandExecutor commandExecutor = new CLIExecutor(new FileExplorerImpl());
-//            Naming.rebind("rmi://127.0.0.2:1099/CalculatorService", commandExecutor);
-//        } catch (Exception e) {
-//            System.out.println("Trouble: " + e);
-//        }
-//        String serverName;
-//        
-//        if (args.length == 0) {
-//            serverName = "127.0.0.2";
-//        } else {
-//            serverName = args[0];
-//        }
-//        String rmiName = "rmi://" + serverName + "/CalculatorService";
-//
-//        System.out.println("Connecting to: " + rmiName);
-//        RMICommandExecutor c = (RMICommandExecutor) Naming.lookup(rmiName);
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//
-//        System.err.print("Write your command here:");
-//        String name = reader.readLine();
-//        System.out.println(name);
-//        System.out.println(c.execute(name));
     }
 }

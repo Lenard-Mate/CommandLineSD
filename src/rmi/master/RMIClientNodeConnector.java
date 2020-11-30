@@ -19,13 +19,6 @@ public interface RMIClientNodeConnector extends Remote {
 
     int getNodeCount() throws RemoteException;
 
-    @Deprecated
-    String forwardCommand(String command) throws RemoteException;
 
-    @Deprecated
-    String forwardCommandNod2(String command) throws RemoteException;
-
-    @Deprecated
-    String selectNode(String command) throws RemoteException;
 
 }
